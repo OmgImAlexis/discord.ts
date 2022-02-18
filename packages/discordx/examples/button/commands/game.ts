@@ -4,11 +4,12 @@ import type {
   CommandInteraction,
   EmojiIdentifierResolvable,
 } from "discord.js";
-import { MessageActionRow, MessageButton } from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
+import { ActionRow, ButtonComponent, ButtonStyle } from "discord.js";
 
 import {
   Bot,
-  ButtonComponent,
+  Button,
   Discord,
   Slash,
   SlashChoice,
@@ -78,7 +79,7 @@ export abstract class StonePaperScissor {
       description:
         "Your choose. If empty, it will send a message with buttons to choose and play instead.",
       required: false,
-      type: "STRING",
+      type: ApplicationCommandOptionType.String,
     })
     choice: spcChoice | undefined,
     interaction: CommandInteraction
@@ -101,32 +102,32 @@ export abstract class StonePaperScissor {
         )
       );
     } else {
-      const buttonStone = new MessageButton()
+      const buttonStone = new ButtonComponent()
         .setLabel("Stone")
-        .setEmoji("💎")
-        .setStyle("PRIMARY")
+        .setEmoji({ name: "💎" })
+        .setStyle(ButtonStyle.Primary)
         .setCustomId("spc-stone");
 
-      const buttonPaper = new MessageButton()
+      const buttonPaper = new ButtonComponent()
         .setLabel("Paper")
-        .setEmoji("🧻")
-        .setStyle("PRIMARY")
+        .setEmoji({ name: "🧻" })
+        .setStyle(ButtonStyle.Primary)
         .setCustomId("spc-paper");
 
-      const buttonScissor = new MessageButton()
+      const buttonScissor = new ButtonComponent()
         .setLabel("Scissor")
-        .setEmoji("✂️")
-        .setStyle("PRIMARY")
+        .setEmoji({ name: "✂️" })
+        .setStyle(ButtonStyle.Primary)
         .setCustomId("spc-scissor");
 
-      const buttonWell = new MessageButton()
+      const buttonWell = new ButtonComponent()
         .setLabel("Well")
-        .setEmoji("❓")
-        .setStyle("DANGER")
+        .setEmoji({ name: "❓" })
+        .setStyle(ButtonStyle.Danger)
         .setCustomId("spc-well")
         .setDisabled(true);
 
-      const buttonRow = new MessageActionRow().addComponents(
+      const buttonRow = new ActionRow().addComponents(
         buttonStone,
         buttonPaper,
         buttonScissor,
@@ -142,9 +143,9 @@ export abstract class StonePaperScissor {
     }
   }
 
-  @ButtonComponent("spc-stone")
-  @ButtonComponent("spc-paper")
-  @ButtonComponent("spc-scissor")
+  @Button("spc-stone")
+  @Button("spc-paper")
+  @Button("spc-scissor")
   private async spcButton(interaction: ButtonInteraction) {
     await interaction.deferReply();
 

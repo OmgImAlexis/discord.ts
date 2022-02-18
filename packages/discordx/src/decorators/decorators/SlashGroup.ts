@@ -3,6 +3,7 @@ import type {
   ClassMethodDecorator,
 } from "@discordx/internal";
 import { Modifier } from "@discordx/internal";
+import { ApplicationCommandType } from "discord.js";
 
 import type {
   DApplicationCommandOption,

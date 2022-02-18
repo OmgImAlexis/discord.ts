@@ -144,7 +144,7 @@ module.exports = {
           items: [
             {
               id: "decorators/gui/buttoncomponent",
-              label: "@ButtonComponent",
+              label: "@Button",
               type: "doc",
             },
             {
@@ -154,7 +154,7 @@ module.exports = {
             },
             {
               id: "decorators/gui/selectmenucomponent",
-              label: "@SelectMenuComponent",
+              label: "@SelectMenu",
               type: "doc",
             },
           ],

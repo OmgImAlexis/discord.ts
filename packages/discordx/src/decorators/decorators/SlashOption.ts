@@ -1,16 +1,12 @@
 import type { ParameterDecoratorEx } from "@discordx/internal";
 import { Modifier } from "@discordx/internal";
+import { ApplicationCommandOptionType } from "discord.js";
 
-import type {
-  SlashOptionOptions,
-  SlashOptionType,
-  VerifyName,
-} from "../../index.js";
+import type { SlashOptionOptions, VerifyName } from "../../index.js";
 import {
   DApplicationCommand,
   DApplicationCommandOption,
   MetadataStorage,
-  SlashOptionTypes,
 } from "../../index.js";
 
 /**
@@ -47,23 +43,44 @@ export function SlashOption(
   name: string,
   options?: SlashOptionOptions
 ): ParameterDecoratorEx {
-  function getType(type: string): SlashOptionType {
+  function getType(type: string): ApplicationCommandOptionType {
     switch (type) {
-      case "GUILDMEMBER": {
-        return "USER";
+      case "STRING": {
+        return ApplicationCommandOptionType.String;
       }
+
+      case "NUMBER": {
+        return ApplicationCommandOptionType.Number;
+      }
+
+      case "BOOLEAN": {
+        return ApplicationCommandOptionType.Boolean;
+      }
+
+      case "CHANNEL":
       case "TEXTCHANNEL":
       case "VOICECHANNEL": {
-        return "CHANNEL";
+        return ApplicationCommandOptionType.Channel;
       }
+
+      case "GUILDMEMBER": {
+        return ApplicationCommandOptionType.User;
+      }
+
+      case "ROLE": {
+        return ApplicationCommandOptionType.Role;
+      }
+
+      case "USER":
+      case "GUILDMEMBER": {
+        return ApplicationCommandOptionType.User;
+      }
+
       case "FUNCTION":
-        throw Error(
-          `invalid slash option (${name}): ${type}\nSupported types are: ${SlashOptionTypes.join(
-            ", "
-          )}\n`
-        );
+        throw Error(`invalid slash option (${name}): ${type}\n`);
+
       default:
-        return type as SlashOptionType;
+        throw Error(`invalid slash option (${name}): ${type}\n`);
     }
   }
 
@@ -74,7 +91,8 @@ export function SlashOption(
       ] as () => unknown
     ).name.toUpperCase();
 
-    const type: SlashOptionType = options?.type ?? getType(reflectedType);
+    const type: ApplicationCommandOptionType =
+      options?.type ?? getType(reflectedType);
 
     const option = DApplicationCommandOption.create(
       name,

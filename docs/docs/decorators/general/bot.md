@@ -48,9 +48,9 @@ Array of bot ids, for which only the below statement will be executed.
 
 It either extends or overwrites data configured in below decorators, however, the order of decorators matters.
 
-[@ButtonComponent](/docs/decorators/gui/buttoncomponent)
+[@Button](/docs/decorators/gui/buttoncomponent)
 
-[@SelectMenuComponent](/docs/decorators/gui/selectmenucomponent)
+[@SelectMenu](/docs/decorators/gui/selectmenucomponent)
 
 [@ContextMenu](/docs/decorators/gui/contextmenu)
 

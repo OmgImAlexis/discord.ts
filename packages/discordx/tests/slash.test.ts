@@ -1,5 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import {
+  ApplicationCommandOptionType,
+  ApplicationCommandPermissionType,
+  ApplicationCommandType,
   Channel,
   CommandInteraction,
   GuildMember,
@@ -10,7 +13,6 @@ import {
   VoiceChannel,
 } from "discord.js";
 
-import type { SlashOptionType } from "../build/cjs/index.js";
 import {
   Client,
   Discord,
@@ -140,7 +142,11 @@ export abstract class AppDiscord2 {
 })
 export abstract class AppDiscord1 {
   @Slash("hello")
-  @Permission({ id: "123", permission: true, type: "USER" })
+  @Permission({
+    id: "123",
+    permission: true,
+    type: ApplicationCommandPermissionType.User,
+  })
   add(
     @SlashOption("text", { required: false })
     text: string,
@@ -177,7 +183,10 @@ export abstract class AppDiscord1 {
     @SlashOption("role", { required: false })
     role: Role,
 
-    @SlashOption("userorrole", { required: false, type: "MENTIONABLE" })
+    @SlashOption("userorrole", {
+      required: false,
+      type: ApplicationCommandOptionType.Mentionable,
+    })
     userorrole: GuildMember | User | Role,
 
     interaction: CommandInteraction,
@@ -227,13 +236,13 @@ beforeAll(async () => {
 
 class FakeOption {
   name: string;
-  type: SlashOptionType;
+  type: ApplicationCommandOptionType;
   options: FakeOption[] | undefined;
   value: string | number;
 
   constructor(
     name: string,
-    type: SlashOptionType,
+    type: ApplicationCommandOptionType,
     value: string | number,
     options?: FakeOption[]
   ) {
@@ -320,7 +329,7 @@ class FakeInteraction {
     return false;
   }
 
-  isContextMenu() {
+  isContextMenuCommand() {
     return false;
   }
 
@@ -340,7 +349,7 @@ describe("Slash", () => {
       {
         id: "123",
         permission: true,
-        type: "USER",
+        type: ApplicationCommandPermissionType.User,
       },
     ]);
 
@@ -355,13 +364,13 @@ describe("Slash", () => {
         name: "hello",
         options: [
           {
-            description: "text - string",
+            description: "text",
             name: "text",
             required: false,
-            type: "STRING",
+            type: ApplicationCommandOptionType.String,
           },
         ],
-        type: "CHAT_INPUT",
+        type: ApplicationCommandType.ChatInput,
       },
       {
         defaultPermission: true,
@@ -369,61 +378,65 @@ describe("Slash", () => {
         name: "inference",
         options: [
           {
-            description: "text - string",
+            description: "text",
             name: "text",
             required: true,
-            type: "STRING",
+            type: ApplicationCommandOptionType.String,
           },
           {
-            description: "bool - boolean",
+            description: "bool",
             name: "bool",
             required: true,
-            type: "BOOLEAN",
+            type: ApplicationCommandOptionType.Boolean,
           },
           {
-            description: "nb - number",
+            description: "nb",
             name: "nb",
             required: true,
-            type: "NUMBER",
+            type: ApplicationCommandOptionType.Number,
           },
           {
-            description: "channel - channel",
+            description: "channel",
             name: "channel",
             required: true,
-            type: "CHANNEL",
+            type: ApplicationCommandOptionType.Channel,
           },
           {
-            description: "textchannel - channel",
+            description: "textchannel",
             name: "textchannel",
             required: false,
-            type: "CHANNEL",
+            type: ApplicationCommandOptionType.Channel,
           },
           {
-            description: "voicechannel - channel",
+            description: "voicechannel",
+
             name: "voicechannel",
             required: false,
-            type: "CHANNEL",
+            type: ApplicationCommandOptionType.Channel,
           },
           {
-            description: "user - user",
+            description: "user",
+
             name: "user",
             required: false,
-            type: "USER",
+            type: ApplicationCommandOptionType.User,
           },
           {
-            description: "role - role",
+            description: "role",
+
             name: "role",
             required: false,
-            type: "ROLE",
+            type: ApplicationCommandOptionType.Role,
           },
           {
-            description: "userorrole - mentionable",
+            description: "userorrole",
+
             name: "userorrole",
             required: false,
-            type: "MENTIONABLE",
+            type: ApplicationCommandOptionType.Mentionable,
           },
         ],
-        type: "CHAT_INPUT",
+        type: ApplicationCommandType.ChatInput,
       },
       {
         defaultPermission: true,
@@ -431,23 +444,99 @@ describe("Slash", () => {
         name: "testing",
         options: [
           {
+            description: "text group description",
+            name: "text",
+            options: [
+              {
+                description: "hello",
+                name: "hello",
+                options: [
+                  {
+                    choices: [
+                      {
+                        name: "Good Bye",
+                        value: "GoodBye",
+                      },
+                      {
+                        name: "Hello",
+                        value: "Hello",
+                      },
+                    ],
+                    description: "text",
+                    name: "text",
+                    type: ApplicationCommandOptionType.String,
+                  },
+                ],
+                type: ApplicationCommandOptionType.Subcommand,
+              },
+            ],
+            type: ApplicationCommandOptionType.SubcommandGroup,
+          },
+          {
+            description: "maths group description",
+            name: "maths",
+            options: [
+              {
+                description: "Multiply",
+                name: "multiply",
+                options: [
+                  {
+                    description: "x value",
+                    name: "x",
+                    required: true,
+                    type: ApplicationCommandOptionType.Number,
+                  },
+                  {
+                    description: "y value",
+                    name: "y",
+                    required: true,
+                    type: ApplicationCommandOptionType.Number,
+                  },
+                ],
+                type: ApplicationCommandOptionType.Subcommand,
+              },
+              {
+                description: "Addition",
+                name: "add",
+                options: [
+                  {
+                    description: "x value",
+                    name: "x",
+                    required: true,
+                    type: ApplicationCommandOptionType.Number,
+                  },
+                  {
+                    description: "y value",
+                    name: "y",
+                    required: true,
+                    type: ApplicationCommandOptionType.Number,
+                  },
+                ],
+                type: ApplicationCommandOptionType.Subcommand,
+              },
+            ],
+            type: ApplicationCommandOptionType.SubcommandGroup,
+          },
+          {
             description: "hello",
             name: "hello",
             options: [
               {
-                description: "text - string",
+                description: "text",
+
                 name: "text",
                 required: true,
-                type: "STRING",
+                type: ApplicationCommandOptionType.String,
               },
               {
-                description: "text2 - string",
+                description: "text2",
+
                 name: "text2",
                 required: false,
-                type: "STRING",
+                type: ApplicationCommandOptionType.String,
               },
             ],
-            type: "SUB_COMMAND",
+            type: ApplicationCommandOptionType.Subcommand,
           },
           {
             description: "maths group description",
@@ -470,7 +559,7 @@ describe("Slash", () => {
                     type: "NUMBER",
                   },
                 ],
-                type: "SUB_COMMAND",
+                type: ApplicationCommandOptionType.Subcommand,
               },
               {
                 description: "Addition",
@@ -489,7 +578,7 @@ describe("Slash", () => {
                     type: "NUMBER",
                   },
                 ],
-                type: "SUB_COMMAND",
+                type: ApplicationCommandOptionType.Subcommand,
               },
             ],
             type: "SUB_COMMAND_GROUP",
@@ -513,13 +602,13 @@ describe("Slash", () => {
                     type: "STRING",
                   },
                 ],
-                type: "SUB_COMMAND",
+                type: ApplicationCommandOptionType.Subcommand,
               },
             ],
             type: "SUB_COMMAND_GROUP",
           },
         ],
-        type: "CHAT_INPUT",
+        type: ApplicationCommandType.ChatInput,
       },
       {
         defaultPermission: true,
@@ -538,22 +627,22 @@ describe("Slash", () => {
                     description: "x value",
                     name: "x",
                     required: true,
-                    type: "NUMBER",
+                    type: ApplicationCommandOptionType.Number,
                   },
                   {
                     description: "y value",
                     name: "y",
                     required: true,
-                    type: "NUMBER",
+                    type: ApplicationCommandOptionType.Number,
                   },
                 ],
-                type: "SUB_COMMAND",
+                type: ApplicationCommandOptionType.Subcommand,
               },
             ],
-            type: "SUB_COMMAND_GROUP",
+            type: ApplicationCommandOptionType.SubcommandGroup,
           },
         ],
-        type: "CHAT_INPUT",
+        type: ApplicationCommandType.ChatInput,
       },
       {
         defaultPermission: true,
@@ -564,22 +653,38 @@ describe("Slash", () => {
             description: "add - sub_command_group",
             name: "add",
             options: [
-              { description: "y", name: "y", type: "SUB_COMMAND" },
-              { description: "x", name: "x", type: "SUB_COMMAND" },
+              {
+                description: "y",
+                name: "y",
+                type: ApplicationCommandOptionType.Subcommand,
+              },
+              {
+                description: "x",
+                name: "x",
+                type: ApplicationCommandOptionType.Subcommand,
+              },
             ],
-            type: "SUB_COMMAND_GROUP",
+            type: ApplicationCommandOptionType.SubcommandGroup,
           },
-          { description: "m", name: "m", type: "SUB_COMMAND" },
-          { description: "n", name: "n", type: "SUB_COMMAND" },
+          {
+            description: "m",
+            name: "m",
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+          {
+            description: "n",
+            name: "n",
+            type: ApplicationCommandOptionType.Subcommand,
+          },
         ],
-        type: "CHAT_INPUT",
+        type: ApplicationCommandType.ChatInput,
       },
     ]);
   });
 
   it("Should execute the simple slash", async () => {
     const interaction = new FakeInteraction("hello", [
-      new FakeOption("text", "STRING", "hello"),
+      new FakeOption("text", ApplicationCommandOptionType.String, "hello"),
     ]);
 
     const res = await client.executeInteraction(
@@ -590,9 +695,17 @@ describe("Slash", () => {
 
   it("Should execute the simple grouped text slash", async () => {
     const interaction = new FakeInteraction("testing", [
-      new FakeOption("hello", "SUB_COMMAND", "text", [
-        new FakeOption("text", "STRING", "testing hello text"),
-        new FakeOption("text2", "STRING", "testing hello text2"),
+      new FakeOption("hello", ApplicationCommandOptionType.Subcommand, "text", [
+        new FakeOption(
+          "text",
+          ApplicationCommandOptionType.String,
+          "testing hello text"
+        ),
+        new FakeOption(
+          "text2",
+          ApplicationCommandOptionType.String,
+          "testing hello text2"
+        ),
       ]),
     ]);
 
@@ -610,11 +723,25 @@ describe("Slash", () => {
 
   it("Should execute the simple subgrouped text slash", async () => {
     const interaction = new FakeInteraction("testing", [
-      new FakeOption("text", "SUB_COMMAND_GROUP", "text", [
-        new FakeOption("hello", "SUB_COMMAND", "text", [
-          new FakeOption("text", "STRING", "testing text hello"),
-        ]),
-      ]),
+      new FakeOption(
+        "text",
+        ApplicationCommandOptionType.SubcommandGroup,
+        "text",
+        [
+          new FakeOption(
+            "hello",
+            ApplicationCommandOptionType.Subcommand,
+            "text",
+            [
+              new FakeOption(
+                "text",
+                ApplicationCommandOptionType.String,
+                "testing text hello"
+              ),
+            ]
+          ),
+        ]
+      ),
     ]);
 
     const res = await client.executeInteraction(
@@ -630,12 +757,22 @@ describe("Slash", () => {
 
   it("Should execute the simple subgrouped multiply slash", async () => {
     const interaction = new FakeInteraction("testing", [
-      new FakeOption("maths", "SUB_COMMAND_GROUP", "text", [
-        new FakeOption("multiply", "SUB_COMMAND", "text", [
-          new FakeOption("x", "NUMBER", 2),
-          new FakeOption("y", "NUMBER", 5),
-        ]),
-      ]),
+      new FakeOption(
+        "maths",
+        ApplicationCommandOptionType.SubcommandGroup,
+        "text",
+        [
+          new FakeOption(
+            "multiply",
+            ApplicationCommandOptionType.Subcommand,
+            "text",
+            [
+              new FakeOption("x", ApplicationCommandOptionType.Number, 2),
+              new FakeOption("y", ApplicationCommandOptionType.Number, 5),
+            ]
+          ),
+        ]
+      ),
     ]);
 
     const res = await client.executeInteraction(
@@ -646,12 +783,22 @@ describe("Slash", () => {
 
   it("Should execute the simple subgrouped addition slash", async () => {
     const interaction = new FakeInteraction("testing", [
-      new FakeOption("maths", "SUB_COMMAND_GROUP", "text", [
-        new FakeOption("add", "SUB_COMMAND", "text", [
-          new FakeOption("x", "NUMBER", 2),
-          new FakeOption("y", "NUMBER", 5),
-        ]),
-      ]),
+      new FakeOption(
+        "maths",
+        ApplicationCommandOptionType.SubcommandGroup,
+        "text",
+        [
+          new FakeOption(
+            "add",
+            ApplicationCommandOptionType.Subcommand,
+            "text",
+            [
+              new FakeOption("x", ApplicationCommandOptionType.Number, 2),
+              new FakeOption("y", ApplicationCommandOptionType.Number, 5),
+            ]
+          ),
+        ]
+      ),
     ]);
 
     const res = await client.executeInteraction(
@@ -671,12 +818,22 @@ describe("Slash", () => {
 
   it("Should not execute not found slash", async () => {
     const interaction = new FakeInteraction("testing", [
-      new FakeOption("maths", "SUB_COMMAND_GROUP", "text", [
-        new FakeOption("notfound", "SUB_COMMAND", "text", [
-          new FakeOption("x", "NUMBER", 2),
-          new FakeOption("y", "NUMBER", 5),
-        ]),
-      ]),
+      new FakeOption(
+        "maths",
+        ApplicationCommandOptionType.SubcommandGroup,
+        "text",
+        [
+          new FakeOption(
+            "notfound",
+            ApplicationCommandOptionType.Subcommand,
+            "text",
+            [
+              new FakeOption("x", ApplicationCommandOptionType.Number, 2),
+              new FakeOption("y", ApplicationCommandOptionType.Number, 5),
+            ]
+          ),
+        ]
+      ),
     ]);
 
     const res = await client.executeInteraction(

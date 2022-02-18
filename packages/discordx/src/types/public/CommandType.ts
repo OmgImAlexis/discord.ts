@@ -12,21 +12,6 @@ export type SlashGroupOptions = {
   root?: string;
 };
 
-export const SlashOptionTypes = [
-  "STRING",
-  "BOOLEAN",
-  "INTEGER",
-  "NUMBER",
-  "CHANNEL",
-  "ROLE",
-  "USER",
-  "MENTIONABLE",
-  "SUB_COMMAND",
-  "SUB_COMMAND_GROUP",
-] as const;
-
-export type SlashOptionType = typeof SlashOptionTypes[number];
-
 export type SimpleCommandOptionType =
   | string
   | number

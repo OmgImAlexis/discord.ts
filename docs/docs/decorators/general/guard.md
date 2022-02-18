@@ -4,7 +4,7 @@ You can use functions that are executed before your event to determine if it's e
 
 The order of execution of the guards is done according to their position in the list, so they will be executed in order (from top to bottom).
 
-Guards can be set for `@SimpleCommand`, `@Slash`, `@ButtonComponent`, `@SelectMenuComponent`, `@On`, `@Once`, `@Discord` and globally.
+Guards can be set for `@SimpleCommand`, `@Slash`, `@Button`, `@SelectMenu`, `@On`, `@Once`, `@Discord` and globally.
 
 ```typescript
 import { Discord, On, Client, Guard } from "discordx";
@@ -256,9 +256,9 @@ Array of guard functions.
 
 It either extends or overwrites data configured in below decorators, however, the order of decorators matters.
 
-[@ButtonComponent](/docs/decorators/gui/buttoncomponent)
+[@Button](/docs/decorators/gui/buttoncomponent)
 
-[@SelectMenuComponent](/docs/decorators/gui/selectmenucomponent)
+[@SelectMenu](/docs/decorators/gui/selectmenucomponent)
 
 [@Discord](/docs/decorators/general/discord)
 

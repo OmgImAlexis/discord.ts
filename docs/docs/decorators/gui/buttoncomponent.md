@@ -1,6 +1,6 @@
-# @ButtonComponent
+# @Button
 
-add button interaction handler for your bot using `@ButtonComponent` decorator
+add button interaction handler for your bot using `@Button` decorator
 
 Here are some example screenshots:
 
@@ -40,7 +40,7 @@ class buttonExample {
   }
 
   // register a handler for the button with id: "hello-btn"
-  @ButtonComponent("hello-btn")
+  @Button("hello-btn")
   mybtn(interaction: ButtonInteraction) {
     interaction.reply(`👋 ${interaction.member}`);
   }

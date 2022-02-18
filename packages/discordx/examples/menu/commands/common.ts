@@ -1,17 +1,18 @@
 import type { CommandInteraction, SelectMenuInteraction } from "discord.js";
-import { MessageActionRow, MessageSelectMenu } from "discord.js";
+import { SelectMenuOption } from "discord.js";
+import { ActionRow, SelectMenuComponent } from "discord.js";
 
-import { Discord, SelectMenuComponent, Slash } from "../../../src/index.js";
+import { Discord, SelectMenu, Slash } from "../../../src/index.js";
 
 const roles = [
-  { label: "Principal", value: "principal" },
-  { label: "Teacher", value: "teacher" },
-  { label: "Student", value: "student" },
+  new SelectMenuOption({ label: "Principal", value: "principal" }),
+  new SelectMenuOption({ label: "Teacher", value: "teacher" }),
+  new SelectMenuOption({ label: "Student", value: "student" }),
 ];
 
 @Discord()
 export abstract class buttons {
-  @SelectMenuComponent("role-menu")
+  @SelectMenu("role-menu")
   async handle(interaction: SelectMenuInteraction): Promise<unknown> {
     await interaction.deferReply();
 
@@ -36,12 +37,12 @@ export abstract class buttons {
     await interaction.deferReply();
 
     // create menu for roels
-    const menu = new MessageSelectMenu()
-      .addOptions(roles)
+    const menu = new SelectMenuComponent()
+      .addOptions(...roles)
       .setCustomId("role-menu");
 
     // create a row for meessage actions
-    const buttonRow = new MessageActionRow().addComponents(menu);
+    const buttonRow = new ActionRow().addComponents(menu);
 
     // send it
     interaction.editReply({
