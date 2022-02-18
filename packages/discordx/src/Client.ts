@@ -36,7 +36,7 @@ import type {
   GuardFunction,
   IGuild,
   ILogger,
-  InitCommandConfig,
+  InitCommandOptions,
   IPrefix,
   IPrefixResolver,
   ISimpleCommandByName,
@@ -48,6 +48,8 @@ import {
   MetadataStorage,
   resolveIGuilds,
   SimpleCommandMessage,
+  SimpleCommandOptionType,
+  SimpleCommandParseType,
 } from "./index.js";
 
 /**
@@ -393,7 +395,7 @@ export class Client extends ClientJS {
           const tab = Array(depth).join("\t\t");
           options.forEach((option) => {
             this.logger.log(
-              `${tab}${option.name}: ${option.type.toLowerCase()} (${
+              `${tab}${option.name}: ${SimpleCommandOptionType[option.type]} (${
                 option.classRef.name
               }.${option.key})`
             );
@@ -445,8 +447,8 @@ export class Client extends ClientJS {
    * Initialize all the @Slash with their permissions
    */
   async initApplicationCommands(options?: {
-    global?: InitCommandConfig;
-    guild?: InitCommandConfig;
+    global?: InitCommandOptions;
+    guild?: InitCommandOptions;
   }): Promise<void> {
     const allGuildPromises: Promise<void>[] = [];
     const guildDCommandStore = await this.CommandByGuild();
@@ -479,7 +481,7 @@ export class Client extends ClientJS {
   async initGuildApplicationCommands(
     guildId: string,
     DCommands: DApplicationCommand[],
-    options?: InitCommandConfig
+    options?: InitCommandOptions
   ): Promise<void> {
     const botResolvedGuilds = await this.botResolvedGuilds;
 
@@ -659,7 +661,7 @@ export class Client extends ClientJS {
    * @param options - Options
    */
   async initGlobalApplicationCommands(
-    options?: InitCommandConfig
+    options?: InitCommandOptions
   ): Promise<void> {
     const botResolvedGuilds = await this.botResolvedGuilds;
 
@@ -1233,11 +1235,11 @@ export class Client extends ClientJS {
    *
    * @returns
    */
-  parseCommand(
+  async parseCommand(
     prefix: IPrefix,
     message: Message,
     caseSensitive = false
-  ): "notCommand" | "notFound" | SimpleCommandMessage {
+  ): Promise<SimpleCommandParseType | SimpleCommandMessage> {
     const mappedPrefix = Array.from(this.simpleCommandsByPrefix.keys());
     const prefixRegex = RegExp(
       `^(${[...prefix, ...mappedPrefix]
@@ -1247,7 +1249,7 @@ export class Client extends ClientJS {
 
     const isCommand = prefixRegex.test(message.content);
     if (!isCommand) {
-      return "notCommand";
+      return SimpleCommandParseType.notCommand;
     }
 
     const matchedPrefix = prefixRegex.exec(message.content)?.at(1) ?? "unknown";
@@ -1270,7 +1272,7 @@ export class Client extends ClientJS {
     });
 
     if (!commandRaw) {
-      return "notFound";
+      return SimpleCommandParseType.notFound;
     }
 
     const commandArgs = contentWithoutPrefix
@@ -1284,6 +1286,8 @@ export class Client extends ClientJS {
       commandRaw.command,
       this.simpleCommandConfig?.argSplitter
     );
+
+    command.options = await command.resolveOptions();
 
     return command;
   }
@@ -1329,16 +1333,16 @@ export class Client extends ClientJS {
       return;
     }
 
-    const command = this.parseCommand(
+    const command = await this.parseCommand(
       prefix,
       message,
       options?.caseSensitive ?? false
     );
-    if (command === "notCommand") {
+    if (command === SimpleCommandParseType.notCommand) {
       return;
     }
 
-    if (command === "notFound") {
+    if (command === SimpleCommandParseType.notFound) {
       const handleNotFound = this.simpleCommandConfig?.responses?.notFound;
       if (handleNotFound) {
         if (typeof handleNotFound === "string") {

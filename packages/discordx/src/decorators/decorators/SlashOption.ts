@@ -58,6 +58,7 @@ export function SlashOption(
       }
 
       case "CHANNEL":
+
       case "TEXTCHANNEL":
       case "VOICECHANNEL": {
         return ApplicationCommandOptionType.Channel;
@@ -75,9 +76,6 @@ export function SlashOption(
       case "GUILDMEMBER": {
         return ApplicationCommandOptionType.User;
       }
-
-      case "FUNCTION":
-        throw Error(`invalid slash option (${name}): ${type}\n`);
 
       default:
         throw Error(`invalid slash option (${name}): ${type}\n`);

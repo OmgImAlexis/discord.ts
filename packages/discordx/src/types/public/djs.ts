@@ -5,11 +5,6 @@ import type {
   ChannelType,
 } from "discord.js";
 
-export enum ComponentTypeX {
-  Button = 0,
-  SelectMenu,
-}
-
 export type ApplicationCommandOptionDataX = {
   autocomplete?: boolean;
   channelTypes?: ChannelType[];

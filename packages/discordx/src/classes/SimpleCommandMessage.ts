@@ -5,15 +5,15 @@ import { Embed } from "discord.js";
 import type {
   ArgSplitter,
   DSimpleCommand,
-  SimpleCommandOptionType,
+  SimpleOptionType,
 } from "../index.js";
-import { MetadataStorage } from "../index.js";
+import { MetadataStorage, SimpleCommandOptionType } from "../index.js";
 
 /**
- * Simple command message class
+ * Simple command message
  */
 export class SimpleCommandMessage {
-  options: SimpleCommandOptionType[];
+  options: SimpleOptionType[] = [];
 
   constructor(
     public prefix: string | RegExp,
@@ -22,7 +22,7 @@ export class SimpleCommandMessage {
     public info: DSimpleCommand,
     public splitter?: ArgSplitter
   ) {
-    this.options = this.info.parseParamsEx(this, splitter);
+    // empty constructor
   }
 
   get name(): string {
@@ -34,7 +34,15 @@ export class SimpleCommandMessage {
   }
 
   /**
+   * Resolve options
+   */
+  resolveOptions(): Promise<SimpleOptionType[]> {
+    return this.info.parseParamsEx(this);
+  }
+
+  /**
    * Verify that all options are valid
+   *
    * @returns
    */
   isValid(): boolean {
@@ -42,7 +50,8 @@ export class SimpleCommandMessage {
   }
 
   /**
-   * get related commands
+   * Get related commands
+   *
    * @returns
    */
   getRelatedCommands(): DSimpleCommand[] {
@@ -57,7 +66,8 @@ export class SimpleCommandMessage {
   }
 
   /**
-   * send usage syntax for command
+   * Send usage syntax for command
+   *
    * @returns
    */
   sendUsageSyntax(): Promise<Message> {
@@ -86,7 +96,7 @@ export class SimpleCommandMessage {
         this.prefix +
         this.name +
         ` ${this.info.options
-          .map((op) => `{${op.name}: ${op.type}}`)
+          .map((op) => `{${op.name}: ${SimpleCommandOptionType[op.type]}}`)
           .join(" ")}` +
         "```",
     });

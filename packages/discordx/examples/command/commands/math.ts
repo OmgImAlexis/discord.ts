@@ -8,6 +8,7 @@ import {
   Permission,
   SimpleCommand,
   SimpleCommandOption,
+  SimpleCommandOptionType,
 } from "../../../src/index.js";
 
 @Discord()
@@ -87,7 +88,7 @@ export abstract class commandTest {
 
   @SimpleCommand("mentiontestuser")
   handler(
-    @SimpleCommandOption("user", { type: "USER" })
+    @SimpleCommandOption("user", { type: SimpleCommandOptionType.User })
     user: User, //
     command: SimpleCommandMessage
   ): void {
@@ -98,7 +99,7 @@ export abstract class commandTest {
 
   @SimpleCommand("mentiontestrole")
   handlerRole(
-    @SimpleCommandOption("role", { type: "ROLE" })
+    @SimpleCommandOption("role", { type: SimpleCommandOptionType.Role })
     role: Role, //
     command: SimpleCommandMessage
   ): void {
@@ -109,7 +110,7 @@ export abstract class commandTest {
 
   @SimpleCommand("mentiontestchannel")
   handlerChannel(
-    @SimpleCommandOption("channel", { type: "CHANNEL" })
+    @SimpleCommandOption("channel", { type: SimpleCommandOptionType.Channel })
     channel: Channel, //
     command: SimpleCommandMessage
   ): void {
